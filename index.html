@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
+    <title>Asma mental health clinic</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">MySite</div>
+            <div class="logo">
+                <img src="https://www.adaptivewfs.com/wp-content/uploads/2020/07/logo-placeholder-image.png" alt="Clinic Logo">
+                <span>Asma mental health clinic</span>
+            </div>
             <ul>
                 <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#services">Services</a></li>
+                <li><a href="#announcements">Announcements</a></li>
+                <li><a href="#appointment">Book Appointment</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
@@ -21,47 +24,93 @@
 
     <main>
         <section id="home" class="hero">
-            <h1>Welcome to My Website</h1>
-            <p>Your journey starts here</p>
-            <button class="cta-button">Get Started</button>
+            <div class="hero-content">
+                <h1>Quality Mental health</h1>
+                <p>Experience compassionate mental health care with our expert team</p>
+                <a id="appointmentButton" href="#appointment" class="cta-button">Book Appointment</a>
+            </div>
         </section>
 
-        <section id="about">
-            <h2>About Us</h2>
-            <p>This is a sample website created with HTML, CSS, and JavaScript.</p>
-        </section>
-
-        <section id="services">
-            <h2>Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <h3>Web Design</h3>
-                    <p>Modern and responsive website design</p>
+        <section id="announcements">
+            <div id="announcements-container">
+                <div class="announcement-card">
+                    <h3>Mental healthcare</h3>
+                    <p>We're offering group therapy sessions on Saturdays from 9 AM to 2 PM</p>
+                    <span class="date">June 15, 2025</span>
                 </div>
-                <div class="service-card">
-                    <h3>Development</h3>
-                    <p>Full-stack web development solutions</p>
-                </div>
-                <div class="service-card">
-                    <h3>Support</h3>
-                    <p>24/7 customer support</p>
+                <div class="announcement-card">
+                    <h3>Online therapy sessions</h3>
+                    <p>Our clinic will be open until 8 PM on weekdays during summer</p>
+                    <span class="date">June 1, 2025</span>
                 </div>
             </div>
         </section>
 
+        <section id="appointment" class="appointment-section">
+            <h2>Book Your Appointment</h2>
+            <form id="appointment-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Preferred Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">Preferred Time</label>
+                    <select id="time" name="time" required>
+                        <option value="">Select Time</option>
+                        <option value="9:00">9:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="14:00">2:00 PM</option>
+                        <option value="15:00">3:00 PM</option>
+                        <option value="16:00">4:00 PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reason">Reason for Visit</label>
+                    <textarea id="reason" name="reason" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Book Appointment</button>
+            </form>
+        </section>
+
         <section id="contact">
             <h2>Contact Us</h2>
-            <form id="contact-form">
-                <input type="text" placeholder="Name" required>
-                <input type="email" placeholder="Email" required>
-                <textarea placeholder="Message" required></textarea>
-                <button type="submit">Send Message</button>
-            </form>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h3>Address</h3>
+                    <p>123 Medical Street, City, 12345</p>
+                </div>
+                <div class="contact-item">
+                    <h3>Phone</h3>
+                    <p>(555) 123-4567</p>
+                </div>
+                <div class="contact-item">
+                    <h3>Email</h3>
+                    <p>info@drsmithclinic.com</p>
+                </div>
+                <div class="contact-item">
+                    <h3>Hours</h3>
+                    <p>Mon-Fri: 9:00 AM - 8:00 PM</p>
+                    <p>Sat: 9:00 AM - 2:00 PM</p>
+                </div>
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2025 My Website. All rights reserved.</p>
+        <p>&copy; 2025 Dr. Smith Medical Clinic. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>

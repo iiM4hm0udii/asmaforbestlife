@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Dashboard - Dr. Smith Medical Clinic</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .appointment-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .appointment-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .appointment-card h3 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .appointment-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-pending { background-color: #f8f9fa; color: #6c757d; }
+        .status-confirmed { background-color: #d4edda; color: #155724; }
+        .status-cancelled { background-color: #f8d7da; color: #721c24; }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .action-button {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .confirm-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .notes-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="https://www.adaptivewfs.com/wp-content/uploads/2020/07/logo-placeholder-image.png" alt="Clinic Logo">
+                <span>Dr. Smith Medical Clinic</span>
+            </div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <h1>Appointment Dashboard</h1>
+        
+        <div class="filters">
+            <select id="status-filter">
+                <option value="">All Appointments</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+            <input type="date" id="date-filter" placeholder="Filter by date">
+        </div>
+
+        <div id="appointment-list" class="appointment-list">
+            <!-- Appointments will be loaded here -->
+        </div>
+    </main>
+
+    <script>
+        async function loadAppointments() {
+            try {
+                const response = await fetch('/.netlify/functions/appointment-handler?status=pending');
+                const data = await response.json();
+                displayAppointments(data.appointments);
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+                alert('Failed to load appointments. Please try again later.');
+            }
+        }
+
+        function displayAppointments(appointments) {
+            const container = document.getElementById('appointment-list');
+            container.innerHTML = '';
+
+            appointments.forEach(appointment => {
+                const card = createAppointmentCard(appointment);
+                container.appendChild(card);
+            });
+        }
+
+        function createAppointmentCard(appointment) {
+            const card = document.createElement('div');
+            card.className = 'appointment-card';
+
+            const statusClass = `status-${appointment.status.toLowerCase()}`;
+            card.innerHTML = `
+                <h3>Appointment #${appointment.id}</h3>
+                <span class="appointment-status ${statusClass}">${appointment.status}</span>
+                <p><strong>Name:</strong> ${appointment.name}</p>
+                <p><strong>Date:</strong> ${appointment.date}</p>
+                <p><strong>Time:</strong> ${appointment.time}</p>
+                <p><strong>Reason:</strong> ${appointment.reason}</p>
+                <div class="notes-section">
+                    <h4>Notes:</h4>
+                    <p>${appointment.notes || 'No notes added'}</p>
+                </div>
+                <div class="action-buttons">
+                    ${appointment.status === 'pending' ? `
+                        <button class="action-button confirm-btn" onclick="confirmAppointment('${appointment.id}')">
+                            Confirm
+                        </button>
+                        <button class="action-button cancel-btn" onclick="cancelAppointment('${appointment.id}')">
+                            Cancel
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        async function confirmAppointment(id) {
+            if (!confirm('Are you sure you want to confirm this appointment?')) return;
+
+            try {
+                const response = await fetch('/.netlify/functions/appointment-handler', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id,
+                        status: 'confirmed'
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Appointment confirmed successfully!');
+                    loadAppointments();
+                } else {
+                    alert('Failed to confirm appointment: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error confirming appointment:', error);
+                alert('Failed to confirm appointment. Please try again.');
+            }
+        }
+
+        async function cancelAppointment(id) {
+            const reason = prompt('Please enter the reason for cancellation:');
+            if (!reason) return;
+
+            try {
+                const response = await fetch('/.netlify/functions/appointment-handler?id=' + id + '&reason=' + encodeURIComponent(reason), {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Appointment cancelled successfully!');
+                    loadAppointments();
+                } else {
+                    alert('Failed to cancel appointment: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error cancelling appointment:', error);
+                alert('Failed to cancel appointment. Please try again.');
+            }
+        }
+
+        // Load appointments when page loads
+        document.addEventListener('DOMContentLoaded', loadAppointments);
+
+        // Add filter functionality
+        document.getElementById('status-filter').addEventListener('change', loadAppointments);
+        document.getElementById('date-filter').addEventListener('change', loadAppointments);
+    </script>
+</body>
+</html>
