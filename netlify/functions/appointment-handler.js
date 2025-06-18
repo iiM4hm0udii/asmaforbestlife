@@ -1,7 +1,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const databasePath = path.join(process.cwd(), 'database', 'appointments.json');
+const databasePath = path.join(__dirname, '..', '..', 'database', 'appointments.json');
 
 // Helper function to validate appointment data
 function validateAppointmentData(data) {
